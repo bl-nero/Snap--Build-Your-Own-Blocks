@@ -2642,9 +2642,6 @@ Morph.prototype.drawCachedTexture = function () {
 */
 
 Morph.prototype.drawOn = function (aCanvas, aRect) {
-    if (this.parent instanceof WorldMorph) {
-        console.log('Drawing WorldMorph child at ' + aRect);
-    }
     var rectangle, area, delta, src, context, sw, sh, sl, st, dw, dh;
     if (!this.isVisible) {
         return null;
@@ -7212,8 +7209,9 @@ StringMorph.prototype.drawNew = function () {
             fontHeight(this.fontSize) + Math.abs(shadowOffset.y)
         )
     );
-    this.image.width = width;
-    this.image.height = this.height();
+    this.image.width = width * window.devicePixelRatio;
+    this.image.height = this.height() * window.devicePixelRatio;
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     // prepare context for drawing text
     context.font = this.font();
