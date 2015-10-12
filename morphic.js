@@ -1169,8 +1169,10 @@ function newCanvas(extentPoint) {
     var canvas, ext;
     ext = extentPoint || {x: 0, y: 0};
     canvas = document.createElement('canvas');
-    canvas.width = ext.x;
-    canvas.height = ext.y;
+    canvas.width = ext.x * window.devicePixelRatio;
+    canvas.height = ext.y * window.devicePixelRatio;
+    var context = canvas.getContext('2d');
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
     return canvas;
 }
 
@@ -2640,7 +2642,10 @@ Morph.prototype.drawCachedTexture = function () {
 */
 
 Morph.prototype.drawOn = function (aCanvas, aRect) {
-    var rectangle, area, delta, src, context, w, h, sl, st;
+    if (this.parent instanceof WorldMorph) {
+        console.log('Drawing WorldMorph child at ' + aRect);
+    }
+    var rectangle, area, delta, src, context, sw, sh, sl, st, dw, dh;
     if (!this.isVisible) {
         return null;
     }
@@ -2650,28 +2655,36 @@ Morph.prototype.drawOn = function (aCanvas, aRect) {
         delta = this.position().neg();
         src = area.copy().translateBy(delta);
         context = aCanvas.getContext('2d');
+        //context.save();
+        //context.scale(0.5,0.5);
         context.globalAlpha = this.alpha;
 
-        sl = src.left();
-        st = src.top();
-        w = Math.min(src.width(), this.image.width - sl);
-        h = Math.min(src.height(), this.image.height - st);
+        sl = src.left() * window.devicePixelRatio;
+        st = src.top() * window.devicePixelRatio;
+        sw = Math.min(src.width() * window.devicePixelRatio, this.image.width - sl);
+        sh = Math.min(src.height() * window.devicePixelRatio, this.image.height - st);
+        dw = Math.min(src.width(), (this.image.width / window.devicePixelRatio) - src.left());
+        dh = Math.min(src.height(), (this.image.height / window.devicePixelRatio) - src.top());
 
-        if (w < 1 || h < 1) {
+        if (sw < 1 || sh < 1) {
             return null;
         }
+
+        //context.fillStyle = 'black';
+        //context.fillRect(aRect.left(), aRect.top(), aRect.width(), aRect.height());
 
         context.drawImage(
             this.image,
             sl,
             st,
-            w,
-            h,
+            sw,
+            sh,
             area.left(),
             area.top(),
-            w,
-            h
+            dw,
+            dh
         );
+        //context.restore();
 
     /* "for debugging purposes:"
 
@@ -10065,6 +10078,12 @@ WorldMorph.prototype.brokenFor = function (aMorph) {
 };
 
 WorldMorph.prototype.fullDrawOn = function (aCanvas, aRect) {
+    var ratio = window.devicePixelRatio,
+        ctx = aCanvas.getContext('2d');
+    ctx.restore();
+    ctx.save();
+    ctx.scale(ratio, ratio);
+
     WorldMorph.uber.fullDrawOn.call(this, aCanvas, aRect);
     this.hand.fullDrawOn(aCanvas, aRect);
 };
@@ -10114,13 +10133,19 @@ WorldMorph.prototype.doOneCycle = function () {
 };
 
 WorldMorph.prototype.fillPage = function () {
-    var pos = getDocumentPositionOf(this.worldCanvas),
+    var //pos = getDocumentPositionOf(this.worldCanvas),
         clientHeight = window.innerHeight,
         clientWidth = window.innerWidth,
+        ratio = window.devicePixelRatio,
         myself = this;
 
+    this.worldCanvas.style.position = "absolute";
+    this.worldCanvas.style.left = "0px";
+    this.worldCanvas.style.right = "0px";
+    this.worldCanvas.style.width = "100%";
+    this.worldCanvas.style.height = "100%";
 
-    if (pos.x > 0) {
+    /*if (pos.x > 0) {
         this.worldCanvas.style.position = "absolute";
         this.worldCanvas.style.left = "0px";
         pos.x = 0;
@@ -10129,7 +10154,7 @@ WorldMorph.prototype.fillPage = function () {
         this.worldCanvas.style.position = "absolute";
         this.worldCanvas.style.top = "0px";
         pos.y = 0;
-    }
+    }*/
     if (document.documentElement.scrollTop) {
         // scrolled down b/c of viewport scaling
         clientHeight = document.documentElement.clientHeight;
@@ -10138,12 +10163,12 @@ WorldMorph.prototype.fillPage = function () {
         // scrolled left b/c of viewport scaling
         clientWidth = document.documentElement.clientWidth;
     }
-    if (this.worldCanvas.width !== clientWidth) {
-        this.worldCanvas.width = clientWidth;
+    if (this.worldCanvas.width !== clientWidth * ratio) {
+        this.worldCanvas.width = clientWidth * ratio;
         this.setWidth(clientWidth);
     }
-    if (this.worldCanvas.height !== clientHeight) {
-        this.worldCanvas.height = clientHeight;
+    if (this.worldCanvas.height !== clientHeight * ratio) {
+        this.worldCanvas.height = clientHeight * ratio;
         this.setHeight(clientHeight);
     }
     this.children.forEach(function (child) {
