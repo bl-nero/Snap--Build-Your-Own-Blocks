@@ -7782,11 +7782,12 @@ TextMorph.prototype.drawNew = function () {
             new Point(this.maxWidth + shadowWidth, height)
         );
     }
-    this.image.width = this.width();
-    this.image.height = this.height();
+    this.image.width = this.width() * window.devicePixelRatio;
+    this.image.height = this.height() * window.devicePixelRatio;
 
     // prepare context for drawing text
     context = this.image.getContext('2d');
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.font = this.font();
     context.textAlign = 'left';
     context.textBaseline = 'bottom';

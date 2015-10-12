@@ -5579,14 +5579,14 @@ ArgMorph.prototype.drawNew = function () {
     if (this.type === 'list') {
         this.image = this.listIcon();
         this.silentSetExtent(new Point(
-            this.image.width,
-            this.image.height
+            this.image.width / window.devicePixelRatio,
+            this.image.height / window.devicePixelRatio
         ));
     } else if (this.type === 'object') {
         this.image = this.objectIcon();
         this.silentSetExtent(new Point(
-            this.image.width,
-            this.image.height
+            this.image.width / window.devicePixelRatio,
+            this.image.height / window.devicePixelRatio
         ));
     } else {
         ArgMorph.uber.drawNew.call(this);
@@ -8109,8 +8109,8 @@ SymbolMorph.prototype.drawNew = function () {
         this.symbolWidth() + Math.abs(this.shadowOffset.x),
         this.size + Math.abs(this.shadowOffset.y)
     ));
-    this.silentSetWidth(this.image.width);
-    this.silentSetHeight(this.image.height);
+    this.silentSetWidth(this.image.width / window.devicePixelRatio);
+    this.silentSetHeight(this.image.height / window.devicePixelRatio);
     ctx = this.image.getContext('2d');
     sx = this.shadowOffset.x < 0 ? 0 : this.shadowOffset.x;
     sy = this.shadowOffset.y < 0 ? 0 : this.shadowOffset.y;
@@ -8324,23 +8324,23 @@ SymbolMorph.prototype.drawSymbolGears = function (canvas, color) {
 SymbolMorph.prototype.drawSymbolFile = function (canvas, color) {
     // answer a canvas showing a page symbol
     var ctx = canvas.getContext('2d'),
-        w = Math.min(canvas.width, canvas.height) / 2;
+        w = Math.min(canvas.width, canvas.height) / 2 / window.devicePixelRatio;
 
     ctx.fillStyle = color.toString();
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(w, 0);
     ctx.lineTo(w, w);
-    ctx.lineTo(canvas.width, w);
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.lineTo(0, canvas.height);
+    ctx.lineTo(canvas.width / window.devicePixelRatio, w);
+    ctx.lineTo(canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
+    ctx.lineTo(0, canvas.height / window.devicePixelRatio);
     ctx.closePath();
     ctx.fill();
 
     ctx.fillStyle = color.darker(25).toString();
     ctx.beginPath();
     ctx.moveTo(w, 0);
-    ctx.lineTo(canvas.width, w);
+    ctx.lineTo(canvas.width / window.devicePixelRatio, w);
     ctx.lineTo(w, w);
     ctx.lineTo(w, 0);
     ctx.closePath();
@@ -8495,11 +8495,11 @@ SymbolMorph.prototype.drawSymbolTurtleOutline = function (canvas, color) {
 SymbolMorph.prototype.drawSymbolPause = function (canvas, color) {
     // answer a canvas showing two parallel rectangles
     var ctx = canvas.getContext('2d'),
-        w = canvas.width / 5;
+        w = canvas.width / window.devicePixelRatio / 5;
 
     ctx.fillStyle = color.toString();
-    ctx.fillRect(0, 0, w * 2, canvas.height);
-    ctx.fillRect(w * 3, 0, w * 2, canvas.height);
+    ctx.fillRect(0, 0, w * 2, canvas.height/ window.devicePixelRatio );
+    ctx.fillRect(w * 3, 0, w * 2, canvas.height/ window.devicePixelRatio );
     return canvas;
 };
 
