@@ -303,6 +303,7 @@ As in the \code{for} block, you can click on an orange oval in the \code{script 
 This manual doesn't explain every block in detail. There are many more motion blocks, sound blocks, costume and graphics effects blocks, and so on. You can learn what they all do by experimentation, and also by reading the ``help screens'' that you can get by right-clicking or control-clicking a block and selecting ``\code{help\ldots}'' from the menu that appears. If you forget what palette (color) a block is, but you remember at least part of its name, type control-F and enter the name in the text block that appears in the palette area.
 
 \chapter{Saving and Loading Projects and Media}
+\label{ch:saving-and-loading-projects-and-media}
 
 After you've created a project, you'll want to save it, so that you can have access to it the next time you use \Snap{}. There are several ways to do that. You can save a project on your own computer, or you can save it at the \Snap{} web site. The advantage of saving on the net is that you have access to your project even if you are using a different computer, or a mobile device such as a tablet or smartphone. The advantage of saving on your computer is that you have access to the saved project while on an airplane or otherwise not on the net. This is why we have multiple ways to save.
 
@@ -315,6 +316,7 @@ There are two different ways to save a project (or a media file such as a costum
 {\Huge \TODO{}}
 
 \subsection{XML Export}
+\label{subsec:xml-export}
 
 The second way to save a project on your computer requires two steps, but it doesn't have the limitations of localstore (\TODO{rename}). Projects saved in this second way are normal files on your computer and can be shared with friends, can be opened in any browser, and have no size limitation.
 
@@ -464,6 +466,17 @@ Here's a slightly more compact way to write the factorial function:\nopagebreak
 For more on recursion, see \textit{Thinking Recursively} by Eric Roberts. (The original edition is ISBN~978--0471816522; a more recent \textit{Thinking Recursively in Java} is ISBN~978--0471701460.)
 
 \section{Block Libraries}
+
+When you save a project (see Chapter~\ref{ch:saving-and-loading-projects-and-media} above), any custom blocks you've made are saved with it. But sometimes you'd like to save a collection of blocks that you expect to be useful in more than one project. The tools library we've used throughout this manual is an example. Perhaps your blocks implement a particular data structure (a stack, or a dictionary, etc.), or they're the framework for building a multilevel game. Such a collection of blocks is called a \emph{block library}.
+
+Creating a block library is done using the XML Export mechanism described on page~\pageref{subsec:xml-export}, except that you choose ``Export blocks\ldots'' from the File menu instead of ``Export project\ldots'' You then see a window like this:\nopagebreak
+
+\bigpic{export-blocks-dialog}
+
+The window shows all of your global custom blocks. You can uncheck some of the checkboxes to select exactly which blocks you want to include in your library. (You can right-click or control-click on the export window for a menu that lets you check or uncheck all the boxes at once.) Then press OK. You'll see a new tab with XMLencoded block definitions, which you save using your browser's Save command.
+
+To import a block library, use the ``Import\ldots'' command in the File menu~\inlinepic{../common/btn-file}, or just drag the XML file into the \Snap{} window.
+
 \chapter{First Class Lists}
 \section{The list Block}
 \section{Lists of Lists}

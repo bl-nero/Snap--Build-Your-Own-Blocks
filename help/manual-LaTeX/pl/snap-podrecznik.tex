@@ -312,6 +312,7 @@ Podobnie jak w~przypadku bloku \code{for}, aby zmienić nazwę zmiennej, wystarc
 Niniejszy podręcznik nie opisuje szczegółowo każdego bloku. Jest wiele bloków związanych z~ruchem, dźwiękiem, kostiumami, efektami graficznymi i~tak dalej. Ich przeznaczenie można poznać eksperymentalnie, ale także poprzez lekturę ,,ekranów pomocy''\footnote{Niestety, są one dostępne wyłącznie w~języku angielskim --- przyp. tłum.}, które można obejrzeć klikając interesujący nas blok albo prawym przyciskiem myszy, albo lewym z~wciśniętym jednocześnie klawiszem Ctrl, a~następnie wybierając z~menu polecenie ,,\code{pomoc\ldots}''. Jeśli zapomnisz, w~której palecie znajduje się potrzebny Ci blok, ale pamiętasz choćby część nazwy, wciśnij Ctrl-F i~wpisz ją w~polu tekstowym, które pojawi się w~obszarze palet.
 
 \chapter{Zapisywanie i otwieranie projektów i multimediów}
+\label{ch:zapisywanie-i-otwieranie-projektów-i-multimediów}
 
 Kiedy już stworzymy jakiś projekt, dobrze by było móc go zapisać, aby mieć go pod ręką, kiedy ponownie uruchomimy \Snap{a}. Jest na to kilka sposobów. Możemy zapisać projekt na swoim komputerze albo na stronie internetowej \Snap{a}. Zaletą zapisywania w~sieci jest dostęp do projektów nawet podczas używania innego komputera lub urządzenia mobilnego, takiego jak tablet czy smartfon. Z~kolei zapisywanie na własnym komputerze pozwala na dostęp do zapisanych projektów w~przypadku braku dostępu do sieci, na przykład w~czasie podróży pociągiem lub samolotem. Dlatego właśnie mamy wiele sposobów na zapisanie projektu.
 
@@ -323,7 +324,8 @@ Istnieją dwa różne sposoby na zapisanie projektu lub pliku multimedialnego (n
 
 {\Huge \TODO{}}
 
-\subsection{XML Export}
+\subsection{Eksport do pliku XML}
+\label{subsec:eksport-do-pliku-xml}
 
 Drugi sposób na zapisanie projektu na komputerze ma dwa etapy, ale nie ma ograniczeń związanych z~użyciem localstore (\TODO{zmień nazwę}). Projekty zapisane w~ten sposób są zwykłymi plikami na dysku komputera i~można je wysłać do znajomych oraz otworzyć w~dowolnej przeglądarce. Ponadto ich rozmiar nie jest ograniczony.
 
@@ -331,7 +333,7 @@ Z~menu ,,Plik''~\inlinepic{../common/btn-file} wybieramy ,,Eksportuj projekt\ldo
 
 Jednak tekst XML nie jest po to, abyśmy go czytali. Kiedy już mamy otwartą tę kartę, możemy użyć polecenia ,,Zapisz'' w~przeglądarce. Można je uruchomić z~poziomu menu przeglądarki lub przy pomocy skrótu klawiszowego --- zazwyczaj Command-S (Mac) lub Ctrl-S (wszędzie indziej). Wybieramy nazwę dla pliku, a~przeglądarka zapisze go w~folderze ,,Pobrane''\footnote{lub w~innym miejscu, które wskażemy w~oknie zapisu --- przyp. tłum.}. Na koniec zamykamy kartę z~plikiem XML i~wracamy do środowiska \Snap{}.
 
-\section{Cloud Storage}
+\section{Zapisywanie w~chmurze}
 
 Inną możliwością jest zapisanie projektu ,,w~chmurze'', na stronie internetowej \Snap{a}. Aby to zrobić, musimy najpierw założyć tam konto. Klikamy na przycisku ,,Chmura'' (\,\inlinepic{../common/btn-cloud}\,) na pasku narzędzi, a~następnie wybieramy polecenie ,,Rejestracja\ldots''. Pokaże się następujące okno:\nopagebreak
 
@@ -462,15 +464,26 @@ Możesz również tworzyć funkcje rekurencyjne, takie jak na przykład ten blok
 
 Skupmy się chwilowo na sposobie użycia bloku \code{zwróć}. Kiedy funkcja używa tego bloku, kończy ona swą pracę i~zwraca zadaną wartość; żadne inne bloki w~jej skrypcie nie będą już wykonane. Dlatego też blok \code{jeżeli --- to --- w~przeciwnym razie} z~powyższego skryptu mógłby być po prostu blokiem \code{jeżeli}; wówczas drugi z~bloków \code{zwróć} znajdowałby się pod nim, a~nie wewnątrz niego. Działanie funkcji pozostałoby takie samo, ponieważ w~momencie gdy pierwszy blok \code{zwróć} zostałby wykonany w~przypadku bazowym, działanie funkcji zostałoby zakończone, a~drugi blok \code{zwróć} zostałby zignorowany. Istnieje również komenda \code{zatrzymaj ten blok}, która także kończy wykonywanie aktualnego bloku, a~której używamy do przerywania działania bloków niczego nie zwracających, czyli komend. W~przeciwieństwie do niej blok \code{zatrzymaj ten skrypt} przerywa nie tylko obecne wywołanie bloku, ale cały wywołujący go skrypt, aż do najwyższego poziomu.
 
-A oto nieco bardziej zwięzły sposób na zapis funkcji silni:\nopagebreak
+A~oto nieco bardziej zwięzły sposób na zapis funkcji silni:\nopagebreak
 
 \bigpic{skrypt-bloku-zwiezla-silnia}
 
-(Jeśli nie widzisz bloku funkcji \code{if} na palecie ,,Kontrola'', kliknij przycisk ,,Plik''~\inlinepic{../common/btn-file} na pasku narzędzi i wybierz ,,\code{Importuj narzędzia}''.)
+(Jeśli nie widzisz bloku funkcji \code{if} na palecie ,,Kontrola'', kliknij przycisk ,,Plik''~\inlinepic{../common/btn-file} na pasku narzędzi i~wybierz ,,\code{Importuj narzędzia}''.)
 
 Pragnących dowiedzieć się więcej na temat rekursji odsyłamy do książek Erica Robertsa \textit{Thinking Recursively} (ISBN~978-0471816522) oraz nieco bardziej aktualnej \textit{Thinking Recursively in Java} (ISBN~978-0471701460).
 
-\section{Block Libraries}
+\section{Biblioteki bloków}
+
+Kiedy zapisujemy projekt (zob. rozdział~\ref{ch:zapisywanie-i-otwieranie-projektów-i-multimediów} powyżej), wszystkie nasze własne bloki zostaną zapisane razem z~nim. Czasem jednak chcielibyśmy zapisać kolekcję bloków, które mogłyby być przydatne w~więcej niż jednym projekcie. Przykładem może być biblioteka narzędzi, której używaliśmy w~tym podręczniku. Być może nasze bloki implementują jakąś strukturę danych (np. stos, słownik), a~być może stanowią szkielet do budowy wielopoziomowej gry. Taki zbiór bloków nazywamy \emph{biblioteką}.
+
+Do tworzenia bibliotek bloków używamy mechanizmu eksportu do plików XML opisanego na stronie~\pageref{subsec:eksport-do-pliku-xml}, z~tym, że zamiast ,,Eksportuj projekt\ldots'' wybieramy z~menu Plik polecenie ,,Eksportuj bloki\ldots''. Ukaże się wtedy następujące okno:\nopagebreak
+
+\bigpic{dialog-eksportowania-blokow}
+
+Okno to pokazuje wszystkie nasze własne globalne bloki (tj. te dostępne dla wszystkich duszków). Możemy odznaczyć niektóre pola wyboru, aby wybrać które konkretnie bloki mają zostać włączone w~skład naszej biblioteki. Możemy również kliknąć samo okno prawym przyciskiem myszy lub lewym przyciskiem z~klawiszem Ctrl, aby wywołać menu, które pozwoli nam zmienić zaznaczenie wszystkich bloków na raz. Na koniec wciskamy OK. Pokaże się okno zawierające definicje bloków zapisane w~formacie XML. Możemy je teraz zapisać przy pomocy polecenia ,,Zapisz'' w~przeglądarce.
+
+Aby zaimportować bibliotekę bloków, należy użyć polecenia ,,Importuj\ldots'' z~menu ,,Plik''~\inlinepic{../common/btn-file} lub po prostu przeciągnąć plik XML do okna \Snap{a}.
+
 \chapter{First Class Lists}
 \section{The list Block}
 \section{Lists of Lists}
