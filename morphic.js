@@ -1106,6 +1106,11 @@
             context.scale(pixelRatio, pixelRatio);
         }
     });
+    Object.defineProperty(canvasProto, 'underlyingWidth', {
+        get: function() {
+            return uberWidth.get.call(this);
+        }
+    });
 
     var uberHeight = Object.getOwnPropertyDescriptor(canvasProto, 'height');
     Object.defineProperty(canvasProto, 'height', {
@@ -1119,6 +1124,11 @@
             context.restore();
             context.save();
             context.scale(pixelRatio, pixelRatio);
+        }
+    });
+    Object.defineProperty(canvasProto, 'underlyingHeight', {
+        get: function() {
+            return uberHeight.get.call(this);
         }
     });
 
@@ -2596,6 +2606,9 @@ Morph.prototype.silentMoveBy = function (delta) {
     var children = this.children,
         i = children.length;
     this.bounds = this.bounds.translateBy(delta);
+    if (window.SymbolMorph && this instanceof SymbolMorph && this.name=='file') {
+        console.log(`File icon moved to ${this.bounds}`);
+    }
     if (this.cachedFullBounds) {
         this.cachedFullBounds = this.cachedFullBounds.translateBy(delta);
     }
@@ -10306,6 +10319,14 @@ WorldMorph.prototype.fillPage = function () {
             child.reactToWorldResize(myself.bounds.copy());
         }
     });
+
+    function drawAllNew(morph) {
+        morph.children.forEach(function(child) {
+            drawAllNew(child);
+        });
+        morph.drawNew();
+    }
+    drawAllNew(this);
 };
 
 // WorldMorph global pixel access:

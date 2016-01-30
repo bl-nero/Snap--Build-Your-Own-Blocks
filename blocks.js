@@ -8152,6 +8152,11 @@ SymbolMorph.prototype.drawNew = function () {
         this.symbolWidth() + Math.abs(this.shadowOffset.x),
         this.size + Math.abs(this.shadowOffset.y)
     ));
+    if (this.name == 'file') {
+        console.log(
+            `File icon is ${this.image.width}x${this.image.height} ` +
+            `(${this.image.underlyingWidth}x${this.image.underlyingHeight}), bounds: ${this.bounds}`);
+    }
     this.silentSetWidth(this.image.width);
     this.silentSetHeight(this.image.height);
     ctx = this.image.getContext('2d');
