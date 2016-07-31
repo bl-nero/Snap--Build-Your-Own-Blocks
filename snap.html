@@ -4,37 +4,46 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Snap! Build Your Own Blocks</title>
 		<link rel="shortcut icon" href="favicon.ico">
-		<script type="text/javascript" src="morphic.js"></script>
-		<script type="text/javascript" src="widgets.js"></script>
-		<script type="text/javascript" src="blocks.js"></script>
-		<script type="text/javascript" src="threads.js"></script>
-		<script type="text/javascript" src="objects.js"></script>
-		<script type="text/javascript" src="gui.js"></script>
-		<script type="text/javascript" src="paint.js"></script>
-		<script type="text/javascript" src="lists.js"></script>
-		<script type="text/javascript" src="byob.js"></script>
-		<script type="text/javascript" src="tables.js"></script>
-		<script type="text/javascript" src="xml.js"></script>
-		<script type="text/javascript" src="store.js"></script>
-		<script type="text/javascript" src="locale.js"></script>
-		<script type="text/javascript" src="cloud.js"></script>
-		<script type="text/javascript" src="sha512.js"></script>
-		<script type="text/javascript" src="FileSaver.min.js"></script>
-		<script type="text/javascript">
-			var world;
-			window.onload = function () {
-				world = new WorldMorph(document.getElementById('world'));
-                world.worldCanvas.focus();
-				new IDE_Morph().openIn(world);
-        loop();
-			};
-			function loop() {
-        requestAnimationFrame(loop);
-				world.doOneCycle();
-			}
-		</script>
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                position: relative;
+            }
+            .full-screen {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+            #outside-world {
+                visibility: hidden;
+            }
+        </style>
 	</head>
-	<body style="margin: 0;">
-		<canvas id="world" tabindex="1" style="position: absolute;" />
+	<body>
+        <iframe
+            id="sandbox"
+            src="snap-sandboxed.html"
+            sandbox="allow-scripts"
+            class="full-screen">
+        </iframe>
+
+		<canvas id="outside-world" tabindex="1" class="full-screen">
+        </canvas>
+
+        <script src="morphic.js"></script>
+        <script src="widgets.js"></script>
+        <script src="xml.js"></script>
+
+        <!-- TODO: Extract required stuff (SymbolMorph), get rid of these deps -->
+        <script src="blocks.js"></script>
+        <script src="objects.js"></script>
+
+        <script src="cloud.js"></script>
+        <script src="sha512.js"></script>
+        <script src="messages.js"></script>
+        <script src="cloud-ui.js"></script>
+        <script src="main.js"></script>
 	</body>
 </html>

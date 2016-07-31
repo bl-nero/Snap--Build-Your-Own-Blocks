@@ -10575,6 +10575,15 @@ WorldMorph.prototype.fullDrawOn = function (aCanvas, aRect) {
     this.hand.fullDrawOn(aCanvas, aRect);
 };
 
+WorldMorph.prototype.drawOn = function (aCanvas, aRect) {
+    // If a top-level morph is semi-transparent, subsequent draw operations
+    // would blend the old image with new one. Clearing the rectangle makes sure
+    // that we start with a clear canvas.
+    aCanvas.getContext('2d').clearRect(
+        aRect.left(), aRect.top(), aRect.width(), aRect.height());
+    WorldMorph.uber.drawOn.call(this, aCanvas, aRect);
+};
+
 WorldMorph.prototype.updateBroken = function () {
     var myself = this;
     this.condenseDamages();

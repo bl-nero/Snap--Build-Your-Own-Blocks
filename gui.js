@@ -250,25 +250,43 @@ IDE_Morph.prototype.init = function (isAutoFill) {
 
     // override inherited properites:
     this.color = this.backgroundColor;
+
+    this.username = null;
+
+    this.parentFrameApi = createMessageApi(window.parent, [
+        'initializeCloud',
+        'openProjectsBrowser'
+    ]);
+    const myself = this;
+    const handlers = [
+        'onCloudInitialized',
+        'onCloudError',
+        'loadText',
+        'showMessage'
+    ].reduce(function(handlers, methodName) {
+        handlers[methodName] = myself[methodName].bind(myself);
+        return handlers;
+    }, {});
+    installMessageHandlers(handlers);
 };
 
 IDE_Morph.prototype.openIn = function (world) {
     var hash, usr, myself = this, urlLanguage = null;
 
     // get persistent user data, if any
-    if (localStorage) {
-        usr = localStorage['-snap-user'];
-        if (usr) {
-            usr = SnapCloud.parseResponse(usr)[0];
-            if (usr) {
-                SnapCloud.username = usr.username || null;
-                SnapCloud.password = usr.password || null;
-                if (SnapCloud.username) {
-                    this.source = 'cloud';
-                }
-            }
-        }
-    }
+//    if (localStorage) {
+//        usr = localStorage['-snap-user'];
+//        if (usr) {
+//            usr = SnapCloud.parseResponse(usr)[0];
+//            if (usr) {
+//                SnapCloud.username = usr.username || null;
+//                SnapCloud.password = usr.password || null;
+//                if (SnapCloud.username) {
+//                    this.source = 'cloud';
+//                }
+//            }
+//        }
+//    }
 
     this.buildPanes();
     world.add(this);
@@ -1652,6 +1670,10 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
     this.hasChangedMedia = true;
 };
 
+IDE_Morph.prototype.loadText = function (aString) {
+    this.droppedText(aString);
+};
+
 IDE_Morph.prototype.droppedText = function (aString, name) {
     var lbl = name ? name.split('.')[0] : '';
     if (aString.indexOf('<project') === 0) {
@@ -1935,9 +1957,9 @@ IDE_Morph.prototype.saveSetting = function (key, value) {
 };
 
 IDE_Morph.prototype.getSetting = function (key) {
-    if (localStorage) {
-        return localStorage['-snap-setting-' + key];
-    }
+//    if (localStorage) {
+//        return localStorage['-snap-setting-' + key];
+//    }
     return null;
 };
 
@@ -2120,7 +2142,7 @@ IDE_Morph.prototype.cloudMenu = function () {
         );
         menu.addLine();
     }
-    if (!SnapCloud.username) {
+    if (!this.username) {
         menu.addItem(
             'Login...',
             'initializeCloud'
@@ -2135,7 +2157,7 @@ IDE_Morph.prototype.cloudMenu = function () {
         );
     } else {
         menu.addItem(
-            localize('Logout') + ' ' + SnapCloud.username,
+            localize('Logout') + ' ' + this.username,
             'logout'
         );
         menu.addItem(
@@ -4302,7 +4324,8 @@ IDE_Morph.prototype.createNewProject = function () {
 };
 
 IDE_Morph.prototype.openProjectsBrowser = function () {
-    new ProjectDialogMorph(this, 'open').popUp();
+    this.parentFrameApi.openProjectsBrowser();
+    //new ProjectDialogMorph(this, 'open').popUp();
 };
 
 IDE_Morph.prototype.saveProjectsBrowser = function () {
@@ -4571,44 +4594,51 @@ IDE_Morph.prototype.userSetDragThreshold = function () {
 // IDE_Morph cloud interface
 
 IDE_Morph.prototype.initializeCloud = function () {
-    var myself = this,
-        world = this.world();
-    new DialogBoxMorph(
-        null,
-        function (user) {
-            var pwh = hex_sha512(user.password),
-                str;
-            SnapCloud.login(
-                user.username,
-                pwh,
-                function () {
-                    if (user.choice) {
-                        str = SnapCloud.encodeDict(
-                            {
-                                username: user.username,
-                                password: pwh
-                            }
-                        );
-                        localStorage['-snap-user'] = str;
-                    }
-                    myself.source = 'cloud';
-                    myself.showMessage('now connected.', 2);
-                },
-                myself.cloudError()
-            );
-        }
-    ).withKey('cloudlogin').promptCredentials(
-        'Sign in',
-        'login',
-        null,
-        null,
-        null,
-        null,
-        'stay signed in on this computer\nuntil logging out',
-        world,
-        myself.cloudIcon(),
-        myself.cloudMsg
-    );
+    this.parentFrameApi.initializeCloud();
+//    var myself = this,
+//        world = this.world();
+//    new DialogBoxMorph(
+//        null,
+//        function (user) {
+//            var pwh = hex_sha512(user.password),
+//                str;
+//            SnapCloud.login(
+//                user.username,
+//                pwh,
+//                function () {
+//                    if (user.choice) {
+//                        str = SnapCloud.encodeDict(
+//                            {
+//                                username: user.username,
+//                                password: pwh
+//                            }
+//                        );
+//                        localStorage['-snap-user'] = str;
+//                    }
+//                    myself.source = 'cloud';
+//                    myself.showMessage('now connected.', 2);
+//                },
+//                myself.onCloudError.bind(myself)
+//            );
+//        }
+//    ).withKey('cloudlogin').promptCredentials(
+//        'Sign in',
+//        'login',
+//        null,
+//        null,
+//        null,
+//        null,
+//        'stay signed in on this computer\nuntil logging out',
+//        world,
+//        myself.cloudIcon(),
+//        myself.cloudMsg
+//    );
+};
+
+IDE_Morph.prototype.onCloudInitialized = function(username) {
+    this.username = username;
+    this.source = 'cloud';
+    this.showMessage('now connected.', 2);
 };
 
 IDE_Morph.prototype.createCloudAccount = function () {
@@ -4871,9 +4901,7 @@ IDE_Morph.prototype.cloudResponse = function () {
     };
 };
 
-IDE_Morph.prototype.cloudError = function () {
-    var myself = this;
-
+IDE_Morph.prototype.onCloudError = function (responseText, url) {
     // try finding an eplanation what's going on
     // has some issues, commented out for now
     /*
@@ -4892,32 +4920,30 @@ IDE_Morph.prototype.cloudError = function () {
     }
     */
 
-    return function (responseText, url) {
-        // first, try to find out an explanation for the error
-        // and notify the user about it,
-        // if none is found, show an error dialog box
-        var response = responseText,
-            // explanation = getURL('http://snap.berkeley.edu/cloudmsg.txt'),
-            explanation = null;
-        if (myself.shield) {
-            myself.shield.destroy();
-            myself.shield = null;
-        }
-        if (explanation) {
-            myself.showMessage(explanation);
-            return;
-        }
-        if (response.length > 50) {
-            response = response.substring(0, 50) + '...';
-        }
-        new DialogBoxMorph().inform(
-            'Snap!Cloud',
-            (url ? url + '\n' : '')
-                + response,
-            myself.world(),
-            myself.cloudIcon(null, new Color(180, 0, 0))
-        );
-    };
+    // first, try to find out an explanation for the error
+    // and notify the user about it,
+    // if none is found, show an error dialog box
+    var response = responseText,
+        // explanation = getURL('http://snap.berkeley.edu/cloudmsg.txt'),
+        explanation = null;
+    if (this.shield) {
+        this.shield.destroy();
+        this.shield = null;
+    }
+    if (explanation) {
+        this.showMessage(explanation);
+        return;
+    }
+    if (response.length > 50) {
+        response = response.substring(0, 50) + '...';
+    }
+    new DialogBoxMorph().inform(
+        'Snap!Cloud',
+        (url ? url + '\n' : '')
+            + response,
+        this.world(),
+        this.cloudIcon(null, new Color(180, 0, 0))
+    );
 };
 
 IDE_Morph.prototype.cloudIcon = function (height, color) {
